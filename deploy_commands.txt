@@ -1,0 +1,94 @@
+==========================================
+Project Gaia 部署到日本实例 lhins-avu0wxv3
+==========================================
+
+请按照以下步骤,在腾讯云控制台的 SSH 终端或通过 SSH 连接到 ubuntu@43.130.249.60 后执行:
+
+==========================================
+步骤 1: 进入项目目录
+==========================================
+cd /root/Project_Gaia_20260130212533
+
+==========================================
+步骤 2: 创建虚拟环境
+==========================================
+python3 -m venv venv
+
+==========================================
+步骤 3: 安装依赖
+==========================================
+source venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+deactivate
+
+==========================================
+步骤 4: 创建日志目录
+==========================================
+mkdir -p logs
+
+==========================================
+步骤 5: 验证配置
+==========================================
+cat config/.env | grep TELEGRAM_API_BASE_URL
+# 应该看到: TELEGRAM_API_BASE_URL=https://api.telegram-proxy.com
+
+==========================================
+步骤 6: 创建 systemd 服务
+==========================================
+cat > /etc/systemd/system/gaia.service << 'EOF'
+[Unit]
+Description=Project Gaia - 财务监控系统
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/Project_Gaia_20260130212533
+Environment="PATH=/root/Project_Gaia_20260130212533/venv/bin"
+ExecStart=/root/Project_Gaia_20260130212533/venv/bin/python main.py
+Restart=always
+RestartSec=10
+StandardOutput=append:/root/Project_Gaia_20260130212533/logs/gaia.log
+StandardError=append:/root/Project_Gaia_20260130212533/logs/gaia_error.log
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+==========================================
+步骤 7: 启动服务
+==========================================
+systemctl daemon-reload
+systemctl enable gaia
+systemctl start gaia
+
+==========================================
+步骤 8: 检查服务状态
+==========================================
+systemctl status gaia
+
+==========================================
+步骤 9: 查看日志
+==========================================
+tail -f logs/gaia.log
+
+==========================================
+验证 Telegram 通知
+==========================================
+1. 在 Telegram 中搜索你的 Bot Token 对应的机器人
+2. 发送 /start 开始使用
+3. 系统会自动发送心跳消息,确认连接正常
+
+==========================================
+故障排查
+==========================================
+如果 Telegram 无法连接,尝试修改 .env 文件:
+# 使用其他代理地址
+TELEGRAM_API_BASE_URL=https://tapi.telegram-proxy.com
+# 或者留空使用默认地址
+TELEGRAM_API_BASE_URL=
+
+修改后重启服务:
+systemctl restart gaia
+tail -f logs/gaia.log

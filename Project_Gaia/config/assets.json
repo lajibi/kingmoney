@@ -1,0 +1,42 @@
+[
+  {
+    "name": "比特币",
+    "symbol": "BTC/USDT",
+    "source": "binance",
+    "threshold": 0.03,
+    "level": "high",
+    "enabled": true
+  },
+  {
+    "name": "以太坊",
+    "symbol": "ETH/USDT",
+    "source": "binance",
+    "threshold": 0.04,
+    "level": "medium",
+    "enabled": true
+  },
+  {
+    "name": "莱特币",
+    "symbol": "LTC/USDT",
+    "source": "binance",
+    "threshold": 0.05,
+    "level": "medium",
+    "enabled": true
+  },
+  {
+    "name": "黄金",
+    "symbol": "GC=F",
+    "source": "yfinance",
+    "threshold": 0.02,
+    "level": "high",
+    "enabled": true
+  },
+  {
+    "name": "标普500",
+    "symbol": "^GSPC",
+    "source": "yfinance",
+    "threshold": 0.02,
+    "level": "high",
+    "enabled": true
+  }
+]

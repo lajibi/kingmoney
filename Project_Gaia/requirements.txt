@@ -1,0 +1,17 @@
+# ==================== Project Gaia - 依赖包列表 ====================
+
+# 核心框架
+python-dotenv>=1.0.0
+
+# 数据抓取
+ccxt>=4.1.0
+yfinance>=0.2.32
+
+# AI 集成
+google-generativeai>=0.3.0
+
+# Telegram 通知
+python-telegram-bot>=20.7
+
+# 其他工具
+python-dateutil>=2.8.2
