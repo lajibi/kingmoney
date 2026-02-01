@@ -9,11 +9,12 @@
 ### 核心特性
 
 - 🔍 **低功耗监控**: 60秒轮询 + 30分钟智能冷却
-- 🤖 **AI 智能研判**: Gemini 3 Flash (哨兵) + Gemini 1.5 Pro (深度)
+- 🤖 **AI 智能研判**: DeepSeek API (中文输出 + 交互对话)
 - 📊 **多资产支持**: 加密货币 (CCXT) + 传统金融 (Yahoo Finance)
-- 💬 **实时推送**: Telegram Markdown 格式通知
+- 💬 **实时推送**: Telegram Markdown 格式通知 + 机器人交互命令
 - 🧠 **永久记忆**: SQLite 存储价格历史和事件归因
 - 📋 **每日复盘**: 自动生成市场形势预演报告
+- 🤖 **智能对话**: 支持中文对话和主动查询
 
 ## 🚀 快速开始
 
@@ -29,10 +30,15 @@ pip install -r requirements.txt
 编辑 `config/.env` 文件，填入你的 API Keys：
 
 ```env
-GEMINI_API_KEY=your_gemini_api_key_here
+DEEPSEEK_API_KEY=your_deepseek_api_key_here
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
 TELEGRAM_CHAT_ID=your_telegram_chat_id_here
 ```
+
+**获取 API Keys:**
+- DeepSeek API Key: 访问 https://platform.deepseek.com 注册
+- Telegram Bot Token: 与 @BotFather 对话创建机器人
+- Telegram Chat ID: 与 @userinfobot 对话获取你的Chat ID
 
 ### 3. 配置监控资产
 
@@ -63,6 +69,21 @@ TELEGRAM_CHAT_ID=your_telegram_chat_id_here
 python main.py
 ```
 
+### 5. 启动 Telegram 机器人 (可选)
+
+```bash
+python bot_commands.py
+```
+
+### 6. 使用机器人命令
+
+在 Telegram 中发送以下命令：
+
+- `/check` - 查询当前所有资产价格并生成 AI 分析报告
+- `/report` - 手动触发每日市场报告
+- `/help` - 显示帮助信息
+- 直接发送消息与 AI 对话 (中文)
+
 ## 📁 项目结构
 
 ```
@@ -74,13 +95,15 @@ Project_Gaia/
 ├── core/                   # 核心逻辑模块
 │   ├── fetcher.py          # 数据抓取引擎
 │   ├── monitor.py          # 波动率算法与触发逻辑
-│   └── brain.py            # Gemini API 调用与 AI 分析
+│   ├── brain.py            # AI 分析引擎 (旧版)
+│   └── brain_deepseek.py   # DeepSeek AI 引擎 (新版)
 ├── database/               # 存储层
 │   ├── models.py           # 数据库表结构定义
 │   └── gaia_main.db        # SQLite 数据库文件 (运行后生成)
 ├── utils/                  # 工具类
 │   ├── logger.py           # 日志记录
 │   └── notifier.py         # Telegram 分发接口
+├── bot_commands.py         # Telegram 机器人命令处理器
 ├── logs/                   # 运行日志输出目录
 ├── requirements.txt        # 依赖包列表
 ├── main.py                 # 程序入口
@@ -95,7 +118,7 @@ Project_Gaia/
 
 | 变量 | 说明 | 默认值 |
 |------|------|--------|
-| `GEMINI_API_KEY` | Gemini API 密钥 | - |
+| `DEEPSEEK_API_KEY` | DeepSeek API 密钥 | - |
 | `TELEGRAM_BOT_TOKEN` | Telegram Bot Token | - |
 | `TELEGRAM_CHAT_ID` | 接收消息的用户ID | - |
 | `MONITOR_INTERVAL` | 监控轮询间隔 (秒) | 60 |
@@ -178,7 +201,7 @@ Project_Gaia/
 
 ### 3. AI 分析失败
 
-- 检查 Gemini API Key 是否有效
+- 检查 DeepSeek API Key 是否有效
 - 确认 API 配额是否充足
 - 查看日志中的详细错误信息
 
@@ -187,9 +210,9 @@ Project_Gaia/
 - **语言**: Python 3.10+
 - **异步框架**: asyncio
 - **数据抓取**: CCXT, yfinance
-- **AI 引擎**: Google Gemini API
+- **AI 引擎**: DeepSeek API (deepseek-chat, deepseek-reasoner)
 - **数据库**: SQLite
-- **通知**: Telegram Bot API
+- **通知**: Telegram Bot API (python-telegram-bot)
 - **日志**: Python logging
 
 ## 🎯 性能优化
